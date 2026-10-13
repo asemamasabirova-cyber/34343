@@ -182,4 +182,4 @@ export interface AppData {
   hasSeenWelcome: boolean;
 }
 
-export type Page = View | 'welcome';
+export type Page = View | 'welcome' | 'auth-choice' | 'login' | 'register' | 'forgot' | 'reset-password';

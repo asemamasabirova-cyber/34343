@@ -8,6 +8,8 @@ import type {
 import { loadData, saveData, defaultData, uid, exportData, clearAllData } from '@/lib/storage';
 import { applyTheme } from '@/lib/theme';
 import { translate } from '@/lib/i18n';
+import { supabase } from '@/lib/supabase';
+import type { User } from '@supabase/supabase-js';
 
 interface AppContextValue {
   data: AppData;
@@ -24,6 +26,15 @@ interface AppContextValue {
   accent: AccentColor;
   setTheme: (theme: ThemeMode) => void;
   setAccent: (accent: AccentColor) => void;
+
+  // Authentication
+  user: User | null;
+  login: (email: string, password: string) => Promise<{ error?: string }>;
+  register: (name: string, email: string, password: string) => Promise<{ error?: string; message?: string }>;
+  resetPassword: (email: string) => Promise<{ error?: string }>;
+  updatePassword: (password: string) => Promise<{ error?: string }>;
+  logout: () => Promise<{ error?: string }>;
+  continueAsGuest: () => void;
 
   // Welcome
   dismissWelcome: () => void;
@@ -108,11 +119,72 @@ export function AppProvider({ children }: { children: ReactNode }) {
     return d.hasSeenWelcome ? 'dashboard' : 'welcome';
   });
   const [lastDeletedTask, setLastDeletedTask] = useState<Task | null>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const [cloudReady, setCloudReady] = useState(false);
+
+  // Restore and observe the Supabase session
+  useEffect(() => {
+    let mounted = true;
+
+    const loadCloudData = async (sessionUser: User) => {
+      const { data: record, error } = await supabase
+        .from('planora_user_data')
+        .select('data')
+        .eq('user_id', sessionUser.id)
+        .maybeSingle();
+
+      if (error) {
+        console.error('Failed to load account data', error);
+      } else if (record?.data && mounted) {
+        setData({ ...defaultData(), ...(record.data as Partial<AppData>) });
+      }
+      if (mounted) {
+        setCloudReady(true);
+        setCurrentPage('dashboard');
+      }
+    };
+
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (!mounted) return;
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        void loadCloudData(session.user);
+      } else {
+        setCloudReady(true);
+      }
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      if (!mounted) return;
+      setUser(session?.user ?? null);
+      if (event === 'PASSWORD_RECOVERY') {
+        setCurrentPage('reset-password');
+      } else if (event === 'SIGNED_IN' && session?.user) {
+        void loadCloudData(session.user);
+      } else if (event === 'SIGNED_OUT') {
+        setCloudReady(true);
+        setCurrentPage('welcome');
+      }
+    });
+
+    return () => {
+      mounted = false;
+      subscription.unsubscribe();
+    };
+  }, []);
 
   // Persist data on every change
   useEffect(() => {
     saveData(data);
-  }, [data]);
+    if (!user || !cloudReady) return;
+
+    void supabase
+      .from('planora_user_data')
+      .upsert({ user_id: user.id, data, updated_at: new Date().toISOString() })
+      .then(({ error }) => {
+        if (error) console.error('Failed to save account data', error);
+      });
+  }, [data, user, cloudReady]);
 
   // Apply theme
   useEffect(() => {
@@ -145,8 +217,58 @@ export function AppProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const dismissWelcome = useCallback(() => {
+    setCurrentPage('auth-choice');
+  }, []);
+
+  const continueAsGuest = useCallback(() => {
     setData(d => ({ ...d, hasSeenWelcome: true }));
     setCurrentPage('dashboard');
+  }, []);
+
+  const login = useCallback(async (email: string, password: string): Promise<{ error?: string }> => {
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) return { error: error.message };
+    setData(d => ({ ...d, hasSeenWelcome: true }));
+    setCurrentPage('dashboard');
+    return {};
+  }, []);
+
+  const register = useCallback(async (name: string, email: string, password: string): Promise<{ error?: string; message?: string }> => {
+    const { data: result, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: { data: { name } },
+    });
+    if (error) return { error: error.message };
+    if (!result.session || !result.user) {
+      return { message: 'Аккаунт создан. Проверь электронную почту, чтобы подтвердить адрес.' };
+    }
+    const nextData = { ...data, profile: { ...data.profile, name }, hasSeenWelcome: true };
+    setData(nextData);
+    setCurrentPage('dashboard');
+    await supabase.from('planora_user_data').upsert({ user_id: result.user.id, data: nextData, updated_at: new Date().toISOString() });
+    return {};
+  }, [data]);
+
+  const resetPassword = useCallback(async (email: string): Promise<{ error?: string }> => {
+    const { error } = await supabase.auth.resetPasswordForEmail(email, {
+      redirectTo: window.location.origin,
+    });
+    return error ? { error: error.message } : {};
+  }, []);
+
+  const updatePassword = useCallback(async (password: string): Promise<{ error?: string }> => {
+    const { error } = await supabase.auth.updateUser({ password });
+    if (!error) {
+      setData(d => ({ ...d, hasSeenWelcome: true }));
+      setCurrentPage('dashboard');
+    }
+    return error ? { error: error.message } : {};
+  }, []);
+
+  const logout = useCallback(async (): Promise<{ error?: string }> => {
+    const { error } = await supabase.auth.signOut();
+    return error ? { error: error.message } : {};
   }, []);
 
   const updateProfile = useCallback((profile: Profile) => {
@@ -418,6 +540,13 @@ export function AppProvider({ children }: { children: ReactNode }) {
     accent: data.accent,
     setTheme,
     setAccent,
+    user,
+    login,
+    register,
+    resetPassword,
+    updatePassword,
+    logout,
+    continueAsGuest,
     dismissWelcome,
     updateProfile,
     addTask,

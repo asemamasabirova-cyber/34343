@@ -8,13 +8,13 @@ import { ACCENT_COLORS } from '@/lib/theme';
 import type { ThemeMode, AccentColor, Language } from '@/types';
 import {
   User, Globe, Palette, Database, Download, Trash2, AlertTriangle,
-  Sun, Moon, Monitor, Upload, X, Check,
+  Sun, Moon, Monitor, Upload, X, Check, LogOut,
 } from 'lucide-react';
 
 export function SettingsPage() {
   const {
     t, lang, data, setLanguage, setTheme, setAccent,
-    theme, accent, updateProfile, exportAllData, clearTasks, deleteEverything,
+    theme, accent, updateProfile, exportAllData, clearTasks, deleteEverything, user, logout,
   } = useApp();
 
   const [name, setName] = useState(data.profile.name);
@@ -251,7 +251,12 @@ export function SettingsPage() {
           </div>
 
           {/* Local data note */}
-          <p className="text-xs text-slate-400">{t('settings.dataLocalNote')}</p>
+          <p className="text-xs text-slate-400">{user ? 'Данные аккаунта синхронизируются безопасно.' : t('settings.dataLocalNote')}</p>
+          {user && (
+            <Button variant="secondary" onClick={() => { void logout(); }}>
+              <LogOut size={15} /> Выйти из аккаунта
+            </Button>
+          )}
         </div>
       </Card>
 

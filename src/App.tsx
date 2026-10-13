@@ -1,6 +1,7 @@
 import { AppProvider, useApp } from '@/context/AppContext';
 import { Layout } from '@/components/Layout';
 import { WelcomePage } from '@/pages/WelcomePage';
+import { AuthPage } from '@/pages/AuthPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { PlannerPage } from '@/pages/PlannerPage';
 import { TasksPage } from '@/pages/TasksPage';
@@ -19,6 +20,10 @@ function AppContent() {
 
   if (currentPage === 'welcome') {
     return <WelcomePage />;
+  }
+
+  if (currentPage === 'auth-choice' || currentPage === 'login' || currentPage === 'register' || currentPage === 'forgot' || currentPage === 'reset-password') {
+    return <AuthPage mode={currentPage} />;
   }
 
   const pages: Record<string, React.ReactNode> = {
