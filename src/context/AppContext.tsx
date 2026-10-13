@@ -114,10 +114,7 @@ export function useApp(): AppContextValue {
 
 export function AppProvider({ children }: { children: ReactNode }) {
   const [data, setData] = useState<AppData>(() => loadData());
-  const [currentPage, setCurrentPage] = useState<Page>(() => {
-    const d = loadData();
-    return d.hasSeenWelcome ? 'dashboard' : 'welcome';
-  });
+  const [currentPage, setCurrentPage] = useState<Page>('welcome');
   const [lastDeletedTask, setLastDeletedTask] = useState<Task | null>(null);
   const [user, setUser] = useState<User | null>(null);
   const [cloudReady, setCloudReady] = useState(false);
