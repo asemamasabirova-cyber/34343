@@ -143,6 +143,7 @@
   .empty-state {
     @apply flex flex-col items-center justify-center gap-3 py-12 text-center;
   }
+
 }
 
 @layer utilities {
@@ -207,4 +208,16 @@
 
 .dark ::-webkit-scrollbar-thumb {
   background: #475569;
+}
+
+.text-slate-400 {
+  color: #64748b !important;
+}
+
+.dark .text-slate-400 {
+  color: #cbd5e1 !important;
+}
+
+.dark .text-slate-500 {
+  color: #cbd5e1 !important;
 }
