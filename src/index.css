@@ -126,13 +126,13 @@
   }
 
   .sidebar-active {
-    background-color: rgba(var(--accent-primary-rgb), 0.16);
-    color: #0f172a;
+    background-color: var(--accent-primary);
+    color: #ffffff;
   }
 
   .dark .sidebar-active {
-    background-color: rgba(var(--accent-primary-rgb), 0.24);
-    color: #f8fafc;
+    background-color: var(--accent-primary);
+    color: #ffffff;
   }
 
   .focus-ring:focus {

@@ -136,7 +136,7 @@ function NavContent({
                   : 'text-slate-700 hover:bg-slate-100 dark:text-slate-100 dark:hover:bg-slate-700/50'
               }`}
             >
-              <Icon size={18} className={active ? 'accent-text' : 'text-slate-500 dark:text-slate-300'} />
+              <Icon size={18} className={active ? 'text-white' : 'text-slate-500 dark:text-slate-300'} />
               <span>{t(key)}</span>
             </button>
           );
