@@ -126,8 +126,13 @@
   }
 
   .sidebar-active {
-    background-color: rgba(var(--accent-primary-rgb), 0.12);
-    color: var(--accent-primary);
+    background-color: rgba(var(--accent-primary-rgb), 0.16);
+    color: #0f172a;
+  }
+
+  .dark .sidebar-active {
+    background-color: rgba(var(--accent-primary-rgb), 0.24);
+    color: #f8fafc;
   }
 
   .focus-ring:focus {
