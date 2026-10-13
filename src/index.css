@@ -14,19 +14,19 @@
 
     --bg-base: #FFFFFF;
     --bg-card: #FAFAFA;
-    --text-primary: #111111;
-    --text-secondary: #444444;
+    --text-primary: #000000;
+    --text-secondary: #000000;
     --border-color: #E5E5E5;
-    --placeholder-color: #888888;
+    --placeholder-color: #000000;
   }
 
   .dark {
-    --bg-base: #121212;
+    --bg-base: #111111;
     --bg-card: #1E1E1E;
     --text-primary: #FFFFFF;
-    --text-secondary: #D0D0D0;
+    --text-secondary: #FFFFFF;
     --border-color: #353535;
-    --placeholder-color: #888888;
+    --placeholder-color: #FFFFFF;
   }
 
   * {
@@ -240,26 +240,26 @@
    requested Planora color tokens for both themes.
    ============================================================ */
 
-/* --- Light theme: primary text = #111111, secondary = #444444 --- */
+/* --- Light theme: ALL text = #000000 --- */
 
-.text-slate-100 { color: #111111 !important; }
-.text-slate-200 { color: #111111 !important; }
-.text-slate-300 { color: #444444 !important; }
-.text-slate-400 { color: #444444 !important; }
-.text-slate-500 { color: #444444 !important; }
-.text-slate-600 { color: #444444 !important; }
-.text-slate-700 { color: #111111 !important; }
-.text-slate-800 { color: #111111 !important; }
-.text-slate-900 { color: #111111 !important; }
+.text-slate-100 { color: #000000 !important; }
+.text-slate-200 { color: #000000 !important; }
+.text-slate-300 { color: #000000 !important; }
+.text-slate-400 { color: #000000 !important; }
+.text-slate-500 { color: #000000 !important; }
+.text-slate-600 { color: #000000 !important; }
+.text-slate-700 { color: #000000 !important; }
+.text-slate-800 { color: #000000 !important; }
+.text-slate-900 { color: #000000 !important; }
 
-/* --- Dark theme: primary text = #FFFFFF, secondary = #D0D0D0 --- */
+/* --- Dark theme: ALL text = #FFFFFF --- */
 
 .dark .text-slate-100 { color: #FFFFFF !important; }
 .dark .text-slate-200 { color: #FFFFFF !important; }
-.dark .text-slate-300 { color: #D0D0D0 !important; }
-.dark .text-slate-400 { color: #D0D0D0 !important; }
-.dark .text-slate-500 { color: #D0D0D0 !important; }
-.dark .text-slate-600 { color: #D0D0D0 !important; }
+.dark .text-slate-300 { color: #FFFFFF !important; }
+.dark .text-slate-400 { color: #FFFFFF !important; }
+.dark .text-slate-500 { color: #FFFFFF !important; }
+.dark .text-slate-600 { color: #FFFFFF !important; }
 .dark .text-slate-700 { color: #FFFFFF !important; }
 .dark .text-slate-800 { color: #FFFFFF !important; }
 .dark .text-slate-900 { color: #FFFFFF !important; }
@@ -281,8 +281,8 @@
 .dark .bg-slate-700\/60 { background-color: #1E1E1E !important; }
 .dark .bg-slate-800\/80 { background-color: #1E1E1E !important; }
 .dark .bg-slate-800\/60 { background-color: #1E1E1E !important; }
-.dark .bg-slate-900 { background-color: #121212 !important; }
-.dark .bg-slate-900\/80 { background-color: rgba(18, 18, 18, 0.8) !important; }
+.dark .bg-slate-900 { background-color: #111111 !important; }
+.dark .bg-slate-900\/80 { background-color: rgba(17, 17, 17, 0.8) !important; }
 .dark .bg-slate-700\/50 { background-color: rgba(53, 53, 53, 0.5) !important; }
 
 /* --- Hover background overrides --- */
@@ -391,7 +391,10 @@
 }
 
 .planora-auth-input::placeholder {
-  color: #888888;
+  color: #000000;
+}
+.dark .planora-auth-input::placeholder {
+  color: #FFFFFF;
 }
 
 /* ============================================================
@@ -402,5 +405,5 @@
   background: linear-gradient(135deg, #fff8fb 0%, #f8faff 50%, #eef6ff 100%);
 }
 .dark .planora-auth {
-  background: #121212;
+  background: #111111;
 }

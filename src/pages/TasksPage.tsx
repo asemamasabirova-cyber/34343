@@ -102,7 +102,7 @@ export function TasksPage() {
                 : 'bg-slate-100 text-slate-500 hover:bg-slate-200 dark:bg-slate-700/50 dark:text-slate-400 dark:hover:bg-slate-700'
             }`}
           >
-            {f.label} <span className="ml-1 text-xs opacity-60">({f.count})</span>
+            {f.label} <span className="ml-1 text-xs">({f.count})</span>
           </button>
         ))}
       </div>

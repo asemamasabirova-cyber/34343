@@ -121,7 +121,7 @@ export function FreeTimePage() {
           {Object.entries(groupedIdeas).map(([cat, ideas]) => (
             <div key={cat}>
               <h3 className="mb-3 text-sm font-semibold uppercase tracking-wide text-slate-400">
-                {t(cat)} <span className="ml-1 text-xs opacity-60">({ideas.length})</span>
+                {t(cat)} <span className="ml-1 text-xs">({ideas.length})</span>
               </h3>
               <div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
                 {ideas.map(idea => (
