@@ -3,7 +3,8 @@ import { useApp } from '@/context/AppContext';
 import { Card, Button } from '@/components/ui/Card';
 import { Select, Input } from '@/components/ui/Form';
 import { Toast } from '@/components/ui/EmptyState';
-import { Play, Pause, RotateCcw, Timer as TimerIcon, Coffee, Sparkles } from 'lucide-react';
+import { Play, Pause, Square, RotateCcw, Timer as TimerIcon, Coffee, Sparkles, Bell } from 'lucide-react';
+import { showNotification, requestNotificationPermission, notificationsSupported } from '@/lib/notifications';
 
 type Mode = 'focus' | 'short' | 'long' | 'custom';
 
@@ -13,6 +14,48 @@ const DURATIONS: Record<Mode, number> = {
   long: 15,
   custom: 25,
 };
+
+interface TimerState {
+  mode: Mode;
+  isRunning: boolean;
+  isPaused: boolean;
+  endTimestamp: number | null;
+  remaining: number;
+  selectedTaskId: string;
+  customMin: number;
+}
+
+const TIMER_KEY = 'planora_timer_state';
+
+function loadTimerState(): TimerState | null {
+  try {
+    const raw = localStorage.getItem(TIMER_KEY);
+    if (!raw) return null;
+    const parsed = JSON.parse(raw) as TimerState;
+    if (parsed.isRunning && parsed.endTimestamp && parsed.endTimestamp <= Date.now()) {
+      return null;
+    }
+    return parsed;
+  } catch {
+    return null;
+  }
+}
+
+function saveTimerState(state: TimerState): void {
+  try {
+    localStorage.setItem(TIMER_KEY, JSON.stringify(state));
+  } catch {
+    // ignore
+  }
+}
+
+function clearTimerState(): void {
+  try {
+    localStorage.removeItem(TIMER_KEY);
+  } catch {
+    // ignore
+  }
+}
 
 export function FocusPage() {
   const { t, data, addFocusSession } = useApp();
@@ -26,59 +69,108 @@ export function FocusPage() {
   const [selectedTaskId, setSelectedTaskId] = useState('');
   const [toastMsg, setToastMsg] = useState('');
   const [toastShow, setToastShow] = useState(false);
+  const [notifStatus, setNotifStatus] = useState<'idle' | 'asked'>('idle');
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   const duration = mode === 'custom' ? customMin : DURATIONS[mode];
 
-  const showToast = (msg: string) => {
+  const showToast = useCallback((msg: string) => {
     setToastMsg(msg);
     setToastShow(true);
     setTimeout(() => setToastShow(false), 3000);
-  };
+  }, []);
 
-  const clearTimer = () => {
-    if (intervalRef.current) {
-      clearInterval(intervalRef.current);
-      intervalRef.current = null;
-    }
-  };
-
-  const tick = useCallback(() => {
-    if (!endTimestamp) return;
-    const now = Date.now();
-    const diff = Math.floor((endTimestamp - now) / 1000);
-    if (diff <= 0) {
-      setRemaining(0);
-      setIsRunning(false);
-      setIsPaused(false);
-      setEndTimestamp(null);
-      clearTimer();
-      addFocusSession({
-        taskId: selectedTaskId || undefined,
-        taskTitle: data.tasks.find(t => t.id === selectedTaskId)?.title,
-        duration,
-        completed: true,
-        timestamp: Date.now(),
-      });
-      showToast(mode === 'focus' ? t('focus.sessionDone') : t('focus.breakDone'));
-    } else {
-      setRemaining(diff);
-    }
-  }, [endTimestamp, duration, mode, selectedTaskId, data.tasks, addFocusSession, showToast, t]);
-
+  // Restore timer state on mount (handles page refresh and page switching)
   useEffect(() => {
-    if (isRunning && endTimestamp) {
-      intervalRef.current = setInterval(tick, 250);
-      return () => clearTimer();
+    const saved = loadTimerState();
+    if (saved) {
+      setMode(saved.mode);
+      setCustomMin(saved.customMin);
+      setIsRunning(saved.isRunning);
+      setIsPaused(saved.isPaused);
+      setSelectedTaskId(saved.selectedTaskId);
+      if (saved.isRunning && saved.endTimestamp) {
+        const diff = Math.floor((saved.endTimestamp - Date.now()) / 1000);
+        setRemaining(Math.max(0, diff));
+        setEndTimestamp(saved.endTimestamp);
+      } else {
+        setRemaining(saved.remaining);
+        setEndTimestamp(null);
+      }
     }
-  }, [isRunning, endTimestamp, tick]);
+  }, []);
 
-  const handleStart = () => {
+  // Persist timer state whenever it changes
+  useEffect(() => {
+    if (isRunning || isPaused) {
+      saveTimerState({ mode, isRunning, isPaused, endTimestamp, remaining, selectedTaskId, customMin });
+    } else {
+      clearTimerState();
+    }
+  }, [mode, isRunning, isPaused, endTimestamp, remaining, selectedTaskId, customMin]);
+
+  // Ask for notification permission when starting a session
+  const ensureNotificationPermission = useCallback(async () => {
+    if (!notificationsSupported()) {
+      if (notifStatus === 'idle') {
+        showToast(t('notif.unsupported'));
+        setNotifStatus('asked');
+      }
+      return;
+    }
+    if (Notification.permission === 'default' && notifStatus === 'idle') {
+      const granted = await requestNotificationPermission();
+      setNotifStatus('asked');
+      showToast(granted ? t('notif.enabled') : t('notif.denied'));
+    }
+  }, [notifStatus, showToast, t]);
+
+  const handleSessionComplete = useCallback(() => {
+    setRemaining(0);
+    setIsRunning(false);
+    setIsPaused(false);
+    setEndTimestamp(null);
+    clearTimerState();
+    addFocusSession({
+      taskId: selectedTaskId || undefined,
+      taskTitle: data.tasks.find(t => t.id === selectedTaskId)?.title,
+      duration,
+      completed: true,
+      timestamp: Date.now(),
+    });
+    const msg = mode === 'focus' ? t('focus.sessionDone') : t('focus.breakDone');
+    showToast(msg);
+    showNotification(t('focus.notificationTitle'), t('focus.notificationBody'));
+  }, [selectedTaskId, data.tasks, addFocusSession, duration, mode, showToast, t]);
+
+  // Single ticking effect — runs while isRunning
+  useEffect(() => {
+    if (!isRunning || !endTimestamp) return;
+    const tick = () => {
+      const diff = Math.floor((endTimestamp - Date.now()) / 1000);
+      if (diff <= 0) {
+        handleSessionComplete();
+      } else {
+        setRemaining(diff);
+      }
+    };
+    tick();
+    intervalRef.current = setInterval(tick, 250);
+    return () => {
+      if (intervalRef.current) {
+        clearInterval(intervalRef.current);
+        intervalRef.current = null;
+      }
+    };
+  }, [isRunning, endTimestamp, handleSessionComplete]);
+
+  const handleStart = async () => {
     const totalSec = duration * 60;
     setRemaining(totalSec);
     setEndTimestamp(Date.now() + totalSec * 1000);
     setIsRunning(true);
     setIsPaused(false);
+    await ensureNotificationPermission();
     addFocusSession({
       taskId: selectedTaskId || undefined,
       taskTitle: data.tasks.find(t => t.id === selectedTaskId)?.title,
@@ -89,15 +181,13 @@ export function FocusPage() {
   };
 
   const handlePause = () => {
-    clearTimer();
-    setIsRunning(false);
-    setIsPaused(true);
     if (endTimestamp) {
-      const now = Date.now();
-      const remainingMs = endTimestamp - now;
-      setEndTimestamp(null);
+      const remainingMs = endTimestamp - Date.now();
       setRemaining(Math.max(0, Math.floor(remainingMs / 1000)));
     }
+    setIsRunning(false);
+    setIsPaused(true);
+    setEndTimestamp(null);
   };
 
   const handleResume = () => {
@@ -106,22 +196,26 @@ export function FocusPage() {
     setIsPaused(false);
   };
 
-  const handleReset = () => {
-    clearTimer();
+  const handleStop = () => {
     setIsRunning(false);
     setIsPaused(false);
     setEndTimestamp(null);
     setRemaining(duration * 60);
+    clearTimerState();
+  };
+
+  const handleReset = () => {
+    handleStop();
   };
 
   const switchMode = (m: Mode) => {
-    clearTimer();
     setIsRunning(false);
     setIsPaused(false);
     setEndTimestamp(null);
     setMode(m);
     const d = m === 'custom' ? customMin : DURATIONS[m];
     setRemaining(d * 60);
+    clearTimerState();
   };
 
   const handleCustomChange = (v: string) => {
@@ -214,9 +308,16 @@ export function FocusPage() {
               <Play size={18} /> {t('focus.resume')}
             </Button>
           )}
-          <Button variant="ghost" size="lg" onClick={handleReset}>
-            <RotateCcw size={18} /> {t('focus.reset')}
-          </Button>
+          {(isRunning || isPaused) && (
+            <Button variant="ghost" size="lg" onClick={handleStop}>
+              <Square size={18} /> {t('focus.stop')}
+            </Button>
+          )}
+          {!(isRunning || isPaused) && remaining < duration * 60 && (
+            <Button variant="ghost" size="lg" onClick={handleReset}>
+              <RotateCcw size={18} /> {t('focus.reset')}
+            </Button>
+          )}
         </div>
 
         {mode === 'custom' && !isRunning && !isPaused && (

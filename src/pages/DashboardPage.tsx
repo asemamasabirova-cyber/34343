@@ -1,4 +1,4 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useEffect, useRef } from 'react';
 import {
   RefreshCw, Heart, Plus, Copy, Quote as QuoteIcon,
   ChevronLeft, ChevronRight, CalendarCheck,
@@ -15,6 +15,7 @@ import {
   formatFullDate, getWeekDays, addWeeks, isToday, formatDateKey,
   parseDateKey, tDay, tDayShort, formatDateShort, getGreetingKey,
 } from '@/lib/dates';
+import { showNotification, requestNotificationPermission, notificationsSupported } from '@/lib/notifications';
 import type { Quote, Task } from '@/types';
 
 export function DashboardPage() {
@@ -31,12 +32,41 @@ export function DashboardPage() {
   const [taskFormOpen, setTaskFormOpen] = useState(false);
   const [editTask, setEditTask] = useState<Task | null>(null);
   const [defaultDate, setDefaultDate] = useState('');
+  const notifCheckedRef = useRef(false);
+
+  const todayKey = formatDateKey(new Date());
 
   const now = new Date();
   const greetingKey = getGreetingKey(now);
   const weekDays = useMemo(() => getWeekDays(weekRef), [weekRef]);
 
   const displayQuote = currentQuote || data.quotes[0] || { id: 'none', text: '', author: '', custom: false, favorite: false };
+
+  // Check for tasks due today or overdue and send a notification once per mount
+  useEffect(() => {
+    if (notifCheckedRef.current) return;
+    notifCheckedRef.current = true;
+
+    if (!notificationsSupported()) return;
+
+    const checkAndNotify = async () => {
+      if (Notification.permission === 'default') {
+        await requestNotificationPermission();
+      }
+      if (Notification.permission !== 'granted') return;
+
+      const dueToday = data.tasks.filter(t => !t.completed && t.date === todayKey);
+      const overdue = data.tasks.filter(t => !t.completed && t.date < todayKey);
+
+      if (dueToday.length > 0) {
+        showNotification(t('notif.taskReminderTitle'), `${t('notif.taskDueToday')} ${dueToday[0].title}`);
+      } else if (overdue.length > 0) {
+        showNotification(t('notif.taskReminderTitle'), `${t('notif.taskOverdue')} ${overdue[0].title}`);
+      }
+    };
+
+    void checkAndNotify();
+  }, [data.tasks, todayKey, t]);
 
   const tasksByDay = useMemo(() => {
     const map: Record<string, Task[]> = {};

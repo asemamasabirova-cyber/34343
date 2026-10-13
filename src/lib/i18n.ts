@@ -192,6 +192,17 @@ const translations: Record<Language, Record<string, string>> = {
     'focus.breakDone': 'Перерыв окончен!',
     'focus.minutes': 'мин',
     'focus.customDuration': 'Длительность (мин)',
+    'focus.stop': 'Стоп',
+    'focus.notificationTitle': 'Фокус-сессия завершена',
+    'focus.notificationBody': 'Время вышло! Отличная работа.',
+
+    // Notifications
+    'notif.enabled': 'Уведомления включены',
+    'notif.denied': 'Уведомления заблокированы настройками браузера',
+    'notif.unsupported': 'Браузер не поддерживает уведомления',
+    'notif.taskReminderTitle': 'Напоминание о задаче',
+    'notif.taskDueToday': 'Сегодня срок задачи:',
+    'notif.taskOverdue': 'Просрочена задача:',
 
     // Goals
     'goal.title': 'Цели',
@@ -609,6 +620,17 @@ const translations: Record<Language, Record<string, string>> = {
     'focus.breakDone': 'Break is over!',
     'focus.minutes': 'min',
     'focus.customDuration': 'Duration (min)',
+    'focus.stop': 'Stop',
+    'focus.notificationTitle': 'Focus session complete',
+    'focus.notificationBody': 'Time is up! Great work.',
+
+    // Notifications
+    'notif.enabled': 'Notifications enabled',
+    'notif.denied': 'Notifications are blocked by browser settings',
+    'notif.unsupported': 'Browser does not support notifications',
+    'notif.taskReminderTitle': 'Task reminder',
+    'notif.taskDueToday': 'Task due today:',
+    'notif.taskOverdue': 'Task overdue:',
 
     // Goals
     'goal.title': 'Goals',
