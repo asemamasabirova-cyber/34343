@@ -80,7 +80,7 @@ interface BadgeProps {
 
 export function Badge({ children, variant = 'default' }: BadgeProps) {
   const variants = {
-    default: 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300',
+    default: 'bg-black/5 dark:bg-white/10',
     accent: 'accent-bg accent-text',
     success: 'bg-green-50 text-green-600 dark:bg-green-900/30 dark:text-green-400',
     warning: 'bg-amber-50 text-amber-600 dark:bg-amber-900/30 dark:text-amber-400',
@@ -101,7 +101,7 @@ export function ProgressBar({ value, className = '', showLabel = false }: Progre
   const pct = Math.min(100, Math.max(0, value));
   return (
     <div className={`relative w-full ${className}`}>
-      <div className="h-2.5 w-full overflow-hidden rounded-full bg-slate-100 dark:bg-slate-700">
+      <div className="h-2.5 w-full overflow-hidden rounded-full bg-black/5 dark:bg-white/10">
         <div
           className="h-full rounded-full transition-all duration-500 ease-out"
           style={{
@@ -111,7 +111,7 @@ export function ProgressBar({ value, className = '', showLabel = false }: Progre
         />
       </div>
       {showLabel && (
-        <span className="mt-1 block text-xs text-slate-500 dark:text-slate-400">{Math.round(pct)}%</span>
+        <span className="mt-1 block text-xs" style={{ color: 'var(--text-secondary)' }}>{Math.round(pct)}%</span>
       )}
     </div>
   );

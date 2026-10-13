@@ -48,7 +48,7 @@ export function ConfirmDialog({
               <AlertTriangle size={20} className="text-red-500" />
             </div>
           )}
-          <p className="text-sm text-slate-600 dark:text-slate-300">
+          <p className="text-sm" style={{ color: 'var(--text-secondary)' }}>
             {step === 2 && secondMessage ? secondMessage : message}
           </p>
         </div>

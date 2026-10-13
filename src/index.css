@@ -11,6 +11,22 @@
     --accent-light: #fdf2f8;
     --accent-light-rgb: 253, 242, 248;
     --accent-ring: #f9a8d4;
+
+    --bg-base: #FFFFFF;
+    --bg-card: #FAFAFA;
+    --text-primary: #111111;
+    --text-secondary: #444444;
+    --border-color: #E5E5E5;
+    --placeholder-color: #888888;
+  }
+
+  .dark {
+    --bg-base: #121212;
+    --bg-card: #1E1E1E;
+    --text-primary: #FFFFFF;
+    --text-secondary: #D0D0D0;
+    --border-color: #353535;
+    --placeholder-color: #888888;
   }
 
   * {
@@ -25,24 +41,17 @@
 
   body {
     margin: 0;
-    background-color: #f8f9fc;
-    color: #1F2937;
+    background-color: var(--bg-base);
+    color: var(--text-primary);
     transition: background-color 0.3s ease, color 0.3s ease;
-  }
-
-  .dark body {
-    background-color: #0f172a;
-    color: #F9FAFB;
   }
 }
 
 @layer components {
   .card {
-    @apply rounded-2xl border border-slate-200/60 bg-white shadow-sm transition-all duration-200;
-  }
-
-  .dark .card {
-    @apply border-slate-700/50 bg-slate-800/80;
+    @apply rounded-2xl border shadow-sm transition-all duration-200;
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
   }
 
   .card-hover:hover {
@@ -65,51 +74,59 @@
   }
 
   .btn-secondary {
-    @apply border border-slate-200 bg-white text-slate-800 hover:bg-slate-50;
+    @apply border rounded-xl;
+    background-color: var(--bg-base);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+  .btn-secondary:hover:not(:disabled) {
+    filter: brightness(0.97);
   }
 
   .dark .btn-secondary {
-    @apply border-slate-600 bg-slate-700;
-    color: #F9FAFB;
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-primary);
+  }
+  .dark .btn-secondary:hover:not(:disabled) {
+    filter: brightness(1.15);
   }
 
   .btn-ghost {
-    color: #374151;
+    color: var(--text-secondary);
   }
   .btn-ghost:hover {
-    @apply bg-slate-100;
-  }
-
-  .dark .btn-ghost {
-    color: #D1D5DB;
+    background-color: rgba(0, 0, 0, 0.05);
   }
   .dark .btn-ghost:hover {
-    @apply bg-slate-700;
+    background-color: rgba(255, 255, 255, 0.08);
   }
 
   .btn-danger {
     @apply border border-red-200 bg-red-50 text-red-600 hover:bg-red-100;
   }
-
   .dark .btn-danger {
     @apply border-red-800 bg-red-900/30 text-red-400 hover:bg-red-900/50;
   }
 
   .input {
-    @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm outline-none transition-all duration-200 focus:border-transparent focus:ring-2;
-    color: #1F2937;
+    @apply w-full rounded-xl border px-3.5 py-2.5 text-sm outline-none transition-all duration-200 focus:border-transparent focus:ring-2;
+    background-color: var(--bg-base);
+    border-color: var(--border-color);
+    color: var(--text-primary);
     --tw-ring-color: var(--accent-ring);
   }
   .input::placeholder {
-    color: #6B7280;
+    color: var(--placeholder-color);
   }
 
   .dark .input {
-    @apply border-slate-600 bg-slate-700/60;
-    color: #F9FAFB;
+    background-color: var(--bg-card);
+    border-color: var(--border-color);
+    color: var(--text-primary);
   }
   .dark .input::placeholder {
-    color: #9CA3AF;
+    color: var(--placeholder-color);
   }
 
   .textarea {
@@ -118,11 +135,7 @@
 
   .label {
     @apply mb-1.5 block text-sm font-medium;
-    color: #374151;
-  }
-
-  .dark .label {
-    color: #D1D5DB;
+    color: var(--text-secondary);
   }
 
   .badge {
@@ -130,7 +143,7 @@
   }
 
   .accent-bg {
-    background-color: rgba(var(--accent-primary-rgb), 0.08);
+    background-color: rgba(var(--accent-primary-rgb), 0.1);
   }
 
   .accent-text {
@@ -159,7 +172,6 @@
   .empty-state {
     @apply flex flex-col items-center justify-center gap-3 py-12 text-center;
   }
-
 }
 
 @layer utilities {
@@ -196,11 +208,11 @@
   }
 
   .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply rounded-full bg-slate-300;
+    @apply rounded-full;
+    background: #c0c0c0;
   }
-
   .dark .scrollbar-thin::-webkit-scrollbar-thumb {
-    @apply bg-slate-600;
+    background: #454545;
   }
 
   .scrollbar-thin::-webkit-scrollbar-track {
@@ -208,79 +220,100 @@
   }
 }
 
-/* Custom scrollbar for the whole page */
 ::-webkit-scrollbar {
   width: 8px;
 }
-
 ::-webkit-scrollbar-track {
   background: transparent;
 }
-
 ::-webkit-scrollbar-thumb {
   border-radius: 4px;
-  background: #cbd5e1;
+  background: #c0c0c0;
 }
-
 .dark ::-webkit-scrollbar-thumb {
-  background: #475569;
+  background: #454545;
 }
 
-.text-slate-400 {
-  color: #374151 !important;
-}
+/* ============================================================
+   GLOBAL TEXT COLOR OVERRIDES
+   Maps every Tailwind text-slate-* utility to the exact
+   requested Planora color tokens for both themes.
+   ============================================================ */
 
-.dark .text-slate-400 {
-  color: #D1D5DB !important;
-}
+/* --- Light theme: primary text = #111111, secondary = #444444 --- */
 
-.text-slate-500 {
-  color: #374151 !important;
-}
+.text-slate-100 { color: #111111 !important; }
+.text-slate-200 { color: #111111 !important; }
+.text-slate-300 { color: #444444 !important; }
+.text-slate-400 { color: #444444 !important; }
+.text-slate-500 { color: #444444 !important; }
+.text-slate-600 { color: #444444 !important; }
+.text-slate-700 { color: #111111 !important; }
+.text-slate-800 { color: #111111 !important; }
+.text-slate-900 { color: #111111 !important; }
 
-.dark .text-slate-500 {
-  color: #D1D5DB !important;
-}
+/* --- Dark theme: primary text = #FFFFFF, secondary = #D0D0D0 --- */
 
-.text-slate-300 {
-  color: #374151 !important;
-}
+.dark .text-slate-100 { color: #FFFFFF !important; }
+.dark .text-slate-200 { color: #FFFFFF !important; }
+.dark .text-slate-300 { color: #D0D0D0 !important; }
+.dark .text-slate-400 { color: #D0D0D0 !important; }
+.dark .text-slate-500 { color: #D0D0D0 !important; }
+.dark .text-slate-600 { color: #D0D0D0 !important; }
+.dark .text-slate-700 { color: #FFFFFF !important; }
+.dark .text-slate-800 { color: #FFFFFF !important; }
+.dark .text-slate-900 { color: #FFFFFF !important; }
 
-.dark .text-slate-300 {
-  color: #D1D5DB !important;
-}
+/* --- Border overrides --- */
 
-.text-slate-600 {
-  color: #374151 !important;
-}
+.border-slate-100 { border-color: #E5E5E5 !important; }
+.border-slate-200 { border-color: #E5E5E5 !important; }
+.border-slate-200\/60 { border-color: rgba(229, 229, 229, 0.6) !important; }
+.border-slate-300 { border-color: #E5E5E5 !important; }
 
-.dark .text-slate-600 {
-  color: #D1D5DB !important;
-}
+.dark .border-slate-600 { border-color: #353535 !important; }
+.dark .border-slate-700 { border-color: #353535 !important; }
+.dark .border-slate-700\/50 { border-color: rgba(53, 53, 53, 0.5) !important; }
+.dark .border-slate-800 { border-color: #353535 !important; }
 
-.text-slate-700 {
-  color: #1F2937 !important;
-}
+/* --- Background overrides for cards/panels --- */
 
-.dark .text-slate-700 {
-  color: #F9FAFB !important;
-}
+.dark .bg-slate-700\/60 { background-color: #1E1E1E !important; }
+.dark .bg-slate-800\/80 { background-color: #1E1E1E !important; }
+.dark .bg-slate-800\/60 { background-color: #1E1E1E !important; }
+.dark .bg-slate-900 { background-color: #121212 !important; }
+.dark .bg-slate-900\/80 { background-color: rgba(18, 18, 18, 0.8) !important; }
+.dark .bg-slate-700\/50 { background-color: rgba(53, 53, 53, 0.5) !important; }
 
-.text-slate-800 {
-  color: #1F2937 !important;
-}
+/* --- Hover background overrides --- */
 
-.dark .text-slate-800 {
-  color: #F9FAFB !important;
-}
+.hover\:bg-slate-100:hover { background-color: rgba(0, 0, 0, 0.05) !important; }
+.hover\:bg-slate-50:hover { background-color: rgba(0, 0, 0, 0.03) !important; }
+.dark .hover\:bg-slate-700:hover { background-color: rgba(255, 255, 255, 0.08) !important; }
+.dark .hover\:bg-slate-700\/50:hover { background-color: rgba(255, 255, 255, 0.06) !important; }
+.dark .hover\:bg-slate-600:hover { background-color: rgba(255, 255, 255, 0.1) !important; }
 
-.dark .text-slate-100 {
-  color: #F9FAFB !important;
-}
+/* --- Light mode background overrides --- */
 
-.dark .text-slate-200 {
-  color: #D1D5DB !important;
-}
+.bg-slate-100 { background-color: #FAFAFA !important; }
+.bg-slate-50 { background-color: #FAFAFA !important; }
+
+/* --- Dark mode background overrides for remaining utilities --- */
+
+.dark .bg-white { background-color: #1E1E1E !important; }
+.dark .bg-slate-700 { background-color: #1E1E1E !important; }
+.dark .bg-slate-800 { background-color: #1E1E1E !important; }
+
+/* --- Dark mode border overrides for remaining utilities --- */
+
+.dark .border-slate-300 { border-color: #353535 !important; }
+.dark .border-slate-400 { border-color: #353535 !important; }
+.dark .border-slate-100 { border-color: #353535 !important; }
+.dark .border-slate-200 { border-color: #353535 !important; }
+
+/* ============================================================
+   Planora Landing Page
+   ============================================================ */
 
 .planora-landing {
   position: relative;
@@ -358,5 +391,16 @@
 }
 
 .planora-auth-input::placeholder {
-  color: #6B7280;
+  color: #888888;
+}
+
+/* ============================================================
+   Planora Auth Page
+   ============================================================ */
+
+.planora-auth {
+  background: linear-gradient(135deg, #fff8fb 0%, #f8faff 50%, #eef6ff 100%);
+}
+.dark .planora-auth {
+  background: #121212;
 }

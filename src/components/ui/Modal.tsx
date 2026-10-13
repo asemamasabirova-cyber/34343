@@ -29,11 +29,12 @@ export function Modal({ open, onClose, title, children, size = 'md' }: ModalProp
         onClick={(e) => e.stopPropagation()}
       >
         {title && (
-          <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4 dark:border-slate-700">
-            <h2 className="text-lg font-semibold text-slate-800 dark:text-slate-100">{title}</h2>
+          <div className="flex items-center justify-between border-b px-6 py-4" style={{ borderColor: 'var(--border-color)' }}>
+            <h2 className="text-lg font-semibold" style={{ color: 'var(--text-primary)' }}>{title}</h2>
             <button
               onClick={onClose}
-              className="rounded-lg p-1.5 text-slate-400 transition-colors hover:bg-slate-100 hover:text-slate-600 dark:hover:bg-slate-700"
+              className="rounded-lg p-1.5 transition-colors hover:bg-black/5 dark:hover:bg-white/10"
+              style={{ color: 'var(--text-secondary)' }}
             >
               <X size={20} />
             </button>

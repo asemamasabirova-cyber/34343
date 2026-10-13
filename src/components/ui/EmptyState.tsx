@@ -10,10 +10,10 @@ interface EmptyStateProps {
 export function EmptyState({ icon, message, action }: EmptyStateProps) {
   return (
     <div className="empty-state animate-fade-in">
-      <div className="text-slate-300 dark:text-slate-600">
+      <div style={{ color: 'var(--text-secondary)' }}>
         {icon || <Sparkles size={40} />}
       </div>
-      <p className="text-sm text-slate-400 dark:text-slate-500 max-w-xs">{message}</p>
+      <p className="text-sm max-w-xs" style={{ color: 'var(--text-secondary)' }}>{message}</p>
       {action}
     </div>
   );
