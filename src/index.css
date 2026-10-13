@@ -1,0 +1,205 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --accent-primary: #ec4899;
+    --accent-primary-rgb: 236, 72, 153;
+    --accent-light: #fdf2f8;
+    --accent-light-rgb: 253, 242, 248;
+    --accent-ring: #f9a8d4;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    margin: 0;
+    background-color: #f8f9fc;
+    color: #1e293b;
+    transition: background-color 0.3s ease, color 0.3s ease;
+  }
+
+  .dark body {
+    background-color: #0f172a;
+    color: #e2e8f0;
+  }
+}
+
+@layer components {
+  .card {
+    @apply rounded-2xl border border-slate-200/60 bg-white shadow-sm transition-all duration-200;
+  }
+
+  .dark .card {
+    @apply border-slate-700/50 bg-slate-800/80;
+  }
+
+  .card-hover:hover {
+    @apply shadow-md;
+    transform: translateY(-1px);
+  }
+
+  .btn {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl px-4 py-2.5 text-sm font-medium transition-all duration-200 disabled:cursor-not-allowed disabled:opacity-50;
+  }
+
+  .btn-primary {
+    background-color: var(--accent-primary);
+    color: white;
+  }
+
+  .btn-primary:hover:not(:disabled) {
+    filter: brightness(1.08);
+    box-shadow: 0 2px 8px rgba(var(--accent-primary-rgb), 0.35);
+  }
+
+  .btn-secondary {
+    @apply border border-slate-200 bg-white text-slate-700 hover:bg-slate-50;
+  }
+
+  .dark .btn-secondary {
+    @apply border-slate-600 bg-slate-700 text-slate-200 hover:bg-slate-600;
+  }
+
+  .btn-ghost {
+    @apply text-slate-600 hover:bg-slate-100;
+  }
+
+  .dark .btn-ghost {
+    @apply text-slate-300 hover:bg-slate-700;
+  }
+
+  .btn-danger {
+    @apply border border-red-200 bg-red-50 text-red-600 hover:bg-red-100;
+  }
+
+  .dark .btn-danger {
+    @apply border-red-800 bg-red-900/30 text-red-400 hover:bg-red-900/50;
+  }
+
+  .input {
+    @apply w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2.5 text-sm text-slate-800 outline-none transition-all duration-200 placeholder:text-slate-400 focus:border-transparent focus:ring-2;
+    --tw-ring-color: var(--accent-ring);
+  }
+
+  .dark .input {
+    @apply border-slate-600 bg-slate-700/60 text-slate-100 placeholder:text-slate-500;
+  }
+
+  .textarea {
+    @apply input resize-y min-h-[80px];
+  }
+
+  .label {
+    @apply mb-1.5 block text-sm font-medium text-slate-600;
+  }
+
+  .dark .label {
+    @apply text-slate-300;
+  }
+
+  .badge {
+    @apply inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium;
+  }
+
+  .accent-bg {
+    background-color: rgba(var(--accent-primary-rgb), 0.08);
+  }
+
+  .accent-text {
+    color: var(--accent-primary);
+  }
+
+  .accent-border {
+    border-color: rgba(var(--accent-primary-rgb), 0.3);
+  }
+
+  .sidebar-active {
+    background-color: rgba(var(--accent-primary-rgb), 0.12);
+    color: var(--accent-primary);
+  }
+
+  .focus-ring:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px var(--accent-ring);
+  }
+
+  .empty-state {
+    @apply flex flex-col items-center justify-center gap-3 py-12 text-center;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.4s ease-out;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.2s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+
+  @keyframes slideUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes scaleIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .scrollbar-thin::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply rounded-full bg-slate-300;
+  }
+
+  .dark .scrollbar-thin::-webkit-scrollbar-thumb {
+    @apply bg-slate-600;
+  }
+
+  .scrollbar-thin::-webkit-scrollbar-track {
+    background: transparent;
+  }
+}
+
+/* Custom scrollbar for the whole page */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  border-radius: 4px;
+  background: #cbd5e1;
+}
+
+.dark ::-webkit-scrollbar-thumb {
+  background: #475569;
+}
