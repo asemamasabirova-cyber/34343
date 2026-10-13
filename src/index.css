@@ -221,3 +221,78 @@
 .dark .text-slate-500 {
   color: #cbd5e1 !important;
 }
+
+.planora-landing {
+  position: relative;
+  isolation: isolate;
+  background: linear-gradient(135deg, #fff8fb 0%, #f8faff 48%, #eef6ff 100%);
+}
+
+.planora-mark,
+.planora-primary-button {
+  background: linear-gradient(135deg, #f27eb2 0%, #8bb8ef 100%);
+}
+
+.planora-primary-button:hover {
+  box-shadow: 0 16px 30px rgba(153, 126, 210, 0.25);
+}
+
+.planora-gradient-text {
+  background: linear-gradient(100deg, #e96eaa 10%, #769de0 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+
+.planora-orb {
+  position: absolute;
+  z-index: -1;
+  border-radius: 9999px;
+  filter: blur(2px);
+  pointer-events: none;
+}
+
+.planora-orb-pink {
+  left: -10rem;
+  top: 12rem;
+  width: 25rem;
+  height: 25rem;
+  background: rgba(249, 183, 211, 0.3);
+}
+
+.planora-orb-blue {
+  right: -8rem;
+  top: -8rem;
+  width: 30rem;
+  height: 30rem;
+  background: rgba(177, 211, 248, 0.32);
+}
+
+.planora-preview {
+  animation: planoraFloat 7s ease-in-out infinite;
+}
+
+.planora-tasks-card {
+  animation-delay: -2s;
+}
+
+.planora-goal-card {
+  animation-delay: -4s;
+}
+
+.planora-quote-card {
+  animation-delay: -1s;
+}
+
+@keyframes planoraFloat {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  50% { transform: translateY(-9px) rotate(0.4deg); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .planora-preview,
+  .planora-landing .animate-fade-in,
+  .planora-landing .animate-slide-up {
+    animation: none;
+  }
+}

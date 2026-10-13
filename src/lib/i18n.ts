@@ -30,7 +30,7 @@ const translations: Record<Language, Record<string, string>> = {
     'greeting.afternoon': 'Добрый день!',
     'greeting.evening': 'Добрый вечер!',
     'greeting.night': 'Доброй ночи!',
-    'greeting.sub': 'Рада видеть тебя в Life Space ♡',
+    'greeting.sub': 'Рада видеть тебя в Planora ♡',
 
     // Quote
     'quote.title': 'Цитата дня',
@@ -363,7 +363,7 @@ const translations: Record<Language, Record<string, string>> = {
     'settings.clearTasks': 'Очистить все задачи',
     'settings.clearTasksDesc': 'Удалить все задачи. Заметки, цели и другие данные не будут затронуты.',
     'settings.deleteAll': 'Удалить все данные',
-    'settings.deleteAllDesc': 'Безвозвратно удалить все данные Life Space: задачи, заметки, цели, книги, фильмы, активности, цитаты и настройки профиля.',
+    'settings.deleteAllDesc': 'Безвозвратно удалить все данные Planora: задачи, заметки, цели, книги, фильмы, активности, цитаты и настройки профиля.',
     'settings.deleteConfirm': 'Вы уверены? Это действие необратимо.',
     'settings.deleteConfirm2': 'Все данные будут удалены навсегда. Подтвердите ещё раз.',
     'settings.confirm': 'Подтвердить',
@@ -447,7 +447,7 @@ const translations: Record<Language, Record<string, string>> = {
     'greeting.afternoon': 'Good afternoon!',
     'greeting.evening': 'Good evening!',
     'greeting.night': 'Good night!',
-    'greeting.sub': 'Glad to see you in Life Space ♡',
+    'greeting.sub': 'Glad to see you in Planora ♡',
 
     // Quote
     'quote.title': 'Quote of the Day',
@@ -780,7 +780,7 @@ const translations: Record<Language, Record<string, string>> = {
     'settings.clearTasks': 'Clear all tasks',
     'settings.clearTasksDesc': 'Delete all tasks. Notes, goals, and other data will not be affected.',
     'settings.deleteAll': 'Delete all data',
-    'settings.deleteAllDesc': 'Permanently delete all Life Space data: tasks, notes, goals, books, films, activities, quotes, and profile settings.',
+    'settings.deleteAllDesc': 'Permanently delete all Planora data: tasks, notes, goals, books, films, activities, quotes, and profile settings.',
     'settings.deleteConfirm': 'Are you sure? This action is irreversible.',
     'settings.deleteConfirm2': 'All data will be permanently deleted. Confirm again.',
     'settings.confirm': 'Confirm',

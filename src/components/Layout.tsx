@@ -38,7 +38,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
       {/* Mobile header */}
       <div className="sticky top-0 z-30 flex items-center justify-between border-b border-slate-200/60 bg-white/80 px-4 py-3 backdrop-blur-lg md:hidden dark:border-slate-700/50 dark:bg-slate-900/80">
         <div className="flex items-center gap-2">
-          <span className="accent-text text-lg font-bold">Life Space</span>
+          <span className="accent-text text-lg font-bold">PLANORA</span>
         </div>
         <button
           onClick={() => setMobileOpen(!mobileOpen)}
@@ -100,7 +100,7 @@ function NavContent({
     <>
       <div className="mb-6 px-3 pt-5 text-slate-900 dark:text-white">
         <div className="text-xl font-bold tracking-tight">
-          <span className="accent-text">Life Space</span>
+          <span className="accent-text">PLANORA</span>
         </div>
         <div className="mt-0.5 text-xs font-medium text-slate-600 dark:text-slate-300">Student Planner</div>
       </div>
@@ -144,7 +144,7 @@ function NavContent({
       </nav>
 
       <div className="mt-auto px-3 py-4">
-        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">Life Space © 2026</div>
+        <div className="text-xs font-medium text-slate-500 dark:text-slate-400">PLANORA © 2026</div>
       </div>
     </>
   );
