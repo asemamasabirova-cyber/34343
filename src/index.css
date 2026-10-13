@@ -251,6 +251,7 @@
 .text-slate-700 { color: #000000 !important; }
 .text-slate-800 { color: #000000 !important; }
 .text-slate-900 { color: #000000 !important; }
+.text-slate-950 { color: #000000 !important; }
 
 /* --- Dark theme: ALL text = #FFFFFF --- */
 
@@ -263,6 +264,7 @@
 .dark .text-slate-700 { color: #FFFFFF !important; }
 .dark .text-slate-800 { color: #FFFFFF !important; }
 .dark .text-slate-900 { color: #FFFFFF !important; }
+.dark .text-slate-950 { color: #FFFFFF !important; }
 
 /* --- Border overrides --- */
 
@@ -321,6 +323,10 @@
   background: linear-gradient(135deg, #fff8fb 0%, #f8faff 48%, #eef6ff 100%);
 }
 
+.dark .planora-landing {
+  background: #111111;
+}
+
 .planora-mark,
 .planora-primary-button {
   background: linear-gradient(135deg, #f27eb2 0%, #8bb8ef 100%);
@@ -332,6 +338,12 @@
 
 .planora-gradient-text {
   background: linear-gradient(100deg, #e96eaa 10%, #769de0 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.dark .planora-gradient-text {
+  background: linear-gradient(100deg, #f472b6 10%, #93c5fd 90%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
@@ -389,6 +401,29 @@
     animation: none;
   }
 }
+
+/* --- Landing page dark mode: card backgrounds --- */
+.dark .bg-white\/50 { background-color: rgba(30, 30, 30, 0.8) !important; }
+.dark .bg-white\/55 { background-color: rgba(30, 30, 30, 0.85) !important; }
+.dark .bg-white\/70 { background-color: rgba(30, 30, 30, 0.4) !important; }
+.dark .bg-white\/75 { background-color: rgba(30, 30, 30, 0.9) !important; }
+.dark .bg-white\/80 { background-color: rgba(30, 30, 30, 0.9) !important; }
+.dark .bg-white\/85 { background-color: rgba(30, 30, 30, 0.92) !important; }
+.dark .hover\:bg-white:hover { background-color: #1E1E1E !important; }
+
+/* --- Landing page dark mode: card borders --- */
+.dark .border-white\/80 { border-color: rgba(53, 53, 53, 0.8) !important; }
+.dark .border-white\/90 { border-color: rgba(53, 53, 53, 0.9) !important; }
+.dark .border-slate-300\/70 { border-color: rgba(53, 53, 53, 0.7) !important; }
+
+/* --- Landing page dark mode: misc backgrounds --- */
+.dark .bg-slate-50 { background-color: #1E1E1E !important; }
+.dark .bg-slate-100 { background-color: #2a2a2a !important; }
+.dark .bg-pink-50\/80 { background-color: rgba(236, 72, 153, 0.15) !important; }
+.dark .bg-blue-50\/80 { background-color: rgba(59, 130, 246, 0.15) !important; }
+.dark .bg-pink-50 { background-color: rgba(236, 72, 153, 0.15) !important; }
+.dark .bg-blue-50 { background-color: rgba(59, 130, 246, 0.15) !important; }
+.dark .bg-emerald-50 { background-color: rgba(16, 185, 129, 0.15) !important; }
 
 .planora-auth-input::placeholder {
   color: #000000;
