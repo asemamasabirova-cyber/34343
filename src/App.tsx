@@ -1,6 +1,7 @@
 import { AppProvider, useApp } from '@/context/AppContext';
 import { Layout } from '@/components/Layout';
 import { WelcomePage } from '@/pages/WelcomePage';
+import { AboutPage } from '@/pages/AboutPage';
 import { AuthPage } from '@/pages/AuthPage';
 import { DashboardPage } from '@/pages/DashboardPage';
 import { PlannerPage } from '@/pages/PlannerPage';
@@ -20,6 +21,10 @@ function AppContent() {
 
   if (currentPage === 'welcome') {
     return <WelcomePage />;
+  }
+
+  if (currentPage === 'about') {
+    return <AboutPage />;
   }
 
   if (currentPage === 'auth-choice' || currentPage === 'login' || currentPage === 'register' || currentPage === 'verify-email' || currentPage === 'forgot' || currentPage === 'reset-password') {

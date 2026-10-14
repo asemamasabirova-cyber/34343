@@ -21,7 +21,7 @@ const WEEK_DAYS = [
 ];
 
 export function WelcomePage() {
-  const { dismissWelcome } = useApp();
+  const { dismissWelcome, setPage } = useApp();
 
   return (
     <main className="planora-landing min-h-screen overflow-hidden text-slate-900">
@@ -36,10 +36,10 @@ export function WelcomePage() {
           <span className="text-lg font-bold tracking-[-0.04em]">PLANORA</span>
         </div>
         <button
-          onClick={dismissWelcome}
+          onClick={() => setPage('about')}
           className="group hidden items-center gap-2 rounded-full border border-slate-300/70 bg-white/50 px-4 py-2 text-sm font-semibold text-slate-700 backdrop-blur transition hover:border-slate-400 hover:bg-white md:flex"
         >
-          Открыть планер
+          О Planora
           <ArrowUpRight size={16} className="transition-transform group-hover:-translate-y-0.5 group-hover:translate-x-0.5" />
         </button>
       </nav>
