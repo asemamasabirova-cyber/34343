@@ -22,7 +22,7 @@ function AppContent() {
     return <WelcomePage />;
   }
 
-  if (currentPage === 'auth-choice' || currentPage === 'login' || currentPage === 'register' || currentPage === 'forgot' || currentPage === 'reset-password') {
+  if (currentPage === 'auth-choice' || currentPage === 'login' || currentPage === 'register' || currentPage === 'verify-email' || currentPage === 'forgot' || currentPage === 'reset-password') {
     return <AuthPage mode={currentPage} />;
   }
 

@@ -1,9 +1,9 @@
 import { FormEvent, useState } from 'react';
-import { ArrowLeft, ArrowRight, Eye, EyeOff, LockKeyhole, Mail, UserRound } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Eye, EyeOff, LockKeyhole, Mail, UserRound, MailCheck, RefreshCw } from 'lucide-react';
 import { useApp } from '@/context/AppContext';
 import type { Page } from '@/types';
 
-type AuthMode = 'auth-choice' | 'login' | 'register' | 'forgot' | 'reset-password';
+type AuthMode = 'auth-choice' | 'login' | 'register' | 'forgot' | 'reset-password' | 'verify-email';
 
 const errorText = (error: string): string => {
   const normalized = error.toLowerCase();
@@ -14,7 +14,8 @@ const errorText = (error: string): string => {
 };
 
 export function AuthPage({ mode }: { mode: AuthMode }) {
-  const { setPage, login, register, resetPassword, updatePassword, continueAsGuest } = useApp();
+  const { setPage, login, register, resendConfirmation, resetPassword, updatePassword, continueAsGuest } = useApp();
+  const [registeredEmail, setRegisteredEmail] = useState('');
   const [email, setEmail] = useState('');
   const [name, setName] = useState('');
   const [password, setPassword] = useState('');
@@ -66,6 +67,9 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
 
     if (result.error) {
       setError(errorText(result.error));
+    } else if (result.message === 'confirm') {
+      setRegisteredEmail(email.trim());
+      navigate('verify-email');
     } else if (result.message) {
       setNotice(result.message);
     } else if (mode === 'forgot') {
@@ -74,6 +78,26 @@ export function AuthPage({ mode }: { mode: AuthMode }) {
       setNotice('Пароль изменён. Перенаправляем тебя в Planora.');
     }
   };
+
+  if (mode === 'verify-email') {
+    return (
+      <VerifyEmailScreen
+        email={registeredEmail}
+        onBack={() => navigate('auth-choice')}
+        onResend={async () => {
+          setBusy(true);
+          const res = await resendConfirmation(registeredEmail);
+          setBusy(false);
+          if (res.error) setError(errorText(res.error));
+          else setNotice('Письмо отправлено повторно. Проверь свою почту.');
+        }}
+        onLogin={() => navigate('login')}
+        error={error}
+        notice={notice}
+        busy={busy}
+      />
+    );
+  }
 
   if (mode === 'auth-choice') {
     return (
@@ -150,5 +174,34 @@ function Field({ label, value, onChange, placeholder, type = 'text', icon, trail
         {trailing}
       </span>
     </label>
+  );
+}
+
+function VerifyEmailScreen({ email, onBack, onResend, onLogin, error, notice, busy }: { email: string; onBack: () => void; onResend: () => void; onLogin: () => void; error: string; notice: string; busy: boolean }) {
+  return (
+    <AuthShell onBack={onBack}>
+      <div className="mb-7 text-center">
+        <div className="mx-auto mb-5 flex h-16 w-16 items-center justify-center rounded-full" style={{ backgroundColor: 'color-mix(in srgb, var(--accent-primary) 15%, transparent)' }}>
+          <MailCheck size={30} style={{ color: 'var(--accent-primary)' }} />
+        </div>
+        <p className="mb-3 text-sm font-bold uppercase tracking-[0.16em] text-pink-500">PLANORA</p>
+        <h1 className="text-2xl font-bold tracking-tight" style={{ color: 'var(--text-primary)' }}>Подтверди свою почту</h1>
+        <p className="mt-3 text-sm leading-6" style={{ color: 'var(--text-secondary)' }}>
+          Мы отправили ссылку для подтверждения на
+        </p>
+        <p className="mt-1 text-sm font-semibold" style={{ color: 'var(--text-primary)' }}>{email}</p>
+        <p className="mt-3 text-sm leading-6" style={{ color: 'var(--text-secondary)' }}>
+          Открой письмо и нажми на ссылку, чтобы завершить регистрацию.
+        </p>
+      </div>
+      {error && <p role="alert" className="mb-4 rounded-xl bg-red-50 px-3.5 py-3 text-sm font-medium text-red-700">{error}</p>}
+      {notice && <p role="status" className="mb-4 rounded-xl bg-emerald-50 px-3.5 py-3 text-sm font-medium text-emerald-700">{notice}</p>}
+      <button disabled={busy} onClick={onResend} className="flex w-full items-center justify-center gap-2 rounded-2xl border px-4 py-3.5 text-sm font-bold transition hover:-translate-y-0.5 disabled:cursor-wait disabled:opacity-60" style={{ borderColor: 'var(--border-color)', backgroundColor: 'var(--bg-base)', color: 'var(--text-primary)' }}>
+        <RefreshCw size={17} /> {busy ? 'Отправка...' : 'Отправить письмо повторно'}
+      </button>
+      <div className="mt-6 text-center text-sm" style={{ color: 'var(--text-secondary)' }}>
+        Уже подтвердили? <button onClick={onLogin} className="font-semibold underline decoration-pink-300 underline-offset-4" style={{ color: 'var(--text-primary)' }}>Войти</button>
+      </div>
+    </AuthShell>
   );
 }

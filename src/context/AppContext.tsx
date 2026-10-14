@@ -31,6 +31,7 @@ interface AppContextValue {
   user: User | null;
   login: (email: string, password: string) => Promise<{ error?: string }>;
   register: (name: string, email: string, password: string) => Promise<{ error?: string; message?: string }>;
+  resendConfirmation: (email: string) => Promise<{ error?: string }>;
   resetPassword: (email: string) => Promise<{ error?: string }>;
   updatePassword: (password: string) => Promise<{ error?: string }>;
   logout: () => Promise<{ error?: string }>;
@@ -238,7 +239,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     });
     if (error) return { error: error.message };
     if (!result.session || !result.user) {
-      return { message: 'Аккаунт создан. Проверь электронную почту, чтобы подтвердить адрес.' };
+      return { message: 'confirm' };
     }
     const nextData = { ...data, profile: { ...data.profile, name }, hasSeenWelcome: true };
     setData(nextData);
@@ -246,6 +247,15 @@ export function AppProvider({ children }: { children: ReactNode }) {
     await supabase.from('planora_user_data').upsert({ user_id: result.user.id, data: nextData, updated_at: new Date().toISOString() });
     return {};
   }, [data]);
+
+  const resendConfirmation = useCallback(async (email: string): Promise<{ error?: string }> => {
+    const { error } = await supabase.auth.resend({
+      type: 'signup',
+      email,
+      options: { emailRedirectTo: window.location.origin },
+    });
+    return error ? { error: error.message } : {};
+  }, []);
 
   const resetPassword = useCallback(async (email: string): Promise<{ error?: string }> => {
     const { error } = await supabase.auth.resetPasswordForEmail(email, {
@@ -540,6 +550,7 @@ export function AppProvider({ children }: { children: ReactNode }) {
     user,
     login,
     register,
+    resendConfirmation,
     resetPassword,
     updatePassword,
     logout,
